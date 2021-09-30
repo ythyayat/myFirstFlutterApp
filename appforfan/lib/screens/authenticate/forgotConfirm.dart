@@ -1,24 +1,14 @@
-import 'package:appforfan/constant/constant.dart';
 import 'package:flutter/material.dart';
-import 'package:appforfan/services/auth.dart';
 
-class Forgot extends StatefulWidget {
+class ForgotConfirm extends StatefulWidget {
   final Function selectView;
-  const Forgot({required this.selectView});
+  const ForgotConfirm({required this.selectView});
 
   @override
-  _ForgotState createState() => _ForgotState();
+  _ForgotConfirmState createState() => _ForgotConfirmState();
 }
 
-class _ForgotState extends State<Forgot> {
-  final AuthService _auth = AuthService();
-  String email = '';
-
-  void forgotAction() async {
-    await _auth.sendResetEmail(email);
-    widget.selectView('forgotConfirm');
-  }
-
+class _ForgotConfirmState extends State<ForgotConfirm> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -38,7 +28,7 @@ class _ForgotState extends State<Forgot> {
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Text(
-                  'Forgot Password',
+                  'Email Sent!',
                   style: TextStyle(
                       color: Colors.white,
                       fontSize: 30,
@@ -55,19 +45,13 @@ class _ForgotState extends State<Forgot> {
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Text(
-                        'Email',
+                        "Yeayy!! Reset Password email was send to you! follow the instruction on the email to reset your password",
                         style: TextStyle(
                           fontSize: 16,
                           color: Colors.white,
                         ),
+                        textAlign: TextAlign.justify,
                       ),
-                    ),
-                    TextFormField(
-                      decoration:
-                          textInputDecoration.copyWith(hintText: 'email'),
-                      onChanged: (val) {
-                        setState(() => email = val);
-                      },
                     ),
                     SizedBox(
                       height: 8.0,
@@ -91,20 +75,11 @@ class _ForgotState extends State<Forgot> {
                               primary: Colors.white,
                               textStyle: const TextStyle(fontSize: 16),
                             ),
-                            onPressed: () => {forgotAction()},
-                            child: const Text('Send Request Email'),
+                            onPressed: () => {widget.selectView('signin')},
+                            child: const Text('Sign In Again'),
                           ),
                         ],
                       ),
-                    ),
-                    TextButton(
-                      style: TextButton.styleFrom(
-                        padding: const EdgeInsets.all(13.0),
-                        primary: Colors.white,
-                        textStyle: const TextStyle(fontSize: 16),
-                      ),
-                      onPressed: () => widget.selectView('signin'),
-                      child: const Text('Back'),
                     ),
                   ],
                 ),

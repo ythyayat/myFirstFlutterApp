@@ -1,3 +1,4 @@
+import 'package:appforfan/screens/authenticate/forgotConfirm.dart';
 import 'package:appforfan/screens/authenticate/forgotpass.dart';
 import 'package:appforfan/screens/authenticate/signin.dart';
 import 'package:appforfan/screens/authenticate/signup.dart';
@@ -22,6 +23,8 @@ class _AuthenticateState extends State<Authenticate> {
       return SignIn(selectView: selec);
     } else if (show == 'signup') {
       return SignUp(selectView: selec);
+    } else if (show == 'forgotConfirm') {
+      return ForgotConfirm(selectView: selec);
     } else {
       return Forgot(selectView: selec);
     }

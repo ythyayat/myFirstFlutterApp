@@ -1,4 +1,5 @@
 import 'package:appforfan/constant/constant.dart';
+import 'package:appforfan/constant/validator.dart';
 import 'package:flutter/material.dart';
 import 'package:appforfan/services/auth.dart';
 
@@ -12,8 +13,42 @@ class SignUp extends StatefulWidget {
 
 class _SignUpState extends State<SignUp> {
   final AuthService _auth = AuthService();
+  final Validation validation = Validation();
+
   String email = '';
   String password = '';
+  String passwordConfirm = '';
+  String username = '';
+
+  void sigupAction() async {
+    bool validName = validation.name(username);
+    bool validPassword = validation.password(password);
+    print(validPassword);
+    if (!validName) {
+      final snackBar = SnackBar(
+        content: Text('Please input valid name'),
+      );
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    } else if (!validPassword) {
+      final snackBar = SnackBar(
+        content: Text('Min 8 chars, 1 Uppercase, 1 lowercase, 1 number'),
+      );
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    } else if (password != passwordConfirm) {
+      final snackBar = SnackBar(
+        content: Text('Your password confirm not macth'),
+      );
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    } else {
+      var result = await _auth.register(email, password, username);
+      if (!result['status']) {
+        final snackBar = SnackBar(
+          content: Text(result['message']),
+        );
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,6 +86,26 @@ class _SignUpState extends State<SignUp> {
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Text(
+                        'Username',
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                    TextFormField(
+                      decoration:
+                          textInputDecoration.copyWith(hintText: 'username'),
+                      onChanged: (val) {
+                        setState(() => username = val);
+                      },
+                    ),
+                    SizedBox(
+                      height: 8.0,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
                         'Email',
                         style: TextStyle(
                           fontSize: 16,
@@ -79,10 +134,33 @@ class _SignUpState extends State<SignUp> {
                       ),
                     ),
                     TextFormField(
+                      obscureText: true,
+                      enableSuggestions: false,
+                      autocorrect: false,
                       decoration:
                           textInputDecoration.copyWith(hintText: 'password'),
                       onChanged: (val) {
                         setState(() => password = val);
+                      },
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        'Password Confirmation',
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                    TextFormField(
+                      obscureText: true,
+                      enableSuggestions: false,
+                      autocorrect: false,
+                      decoration:
+                          textInputDecoration.copyWith(hintText: 'password'),
+                      onChanged: (val) {
+                        setState(() => passwordConfirm = val);
                       },
                     ),
                     Row(
@@ -118,9 +196,7 @@ class _SignUpState extends State<SignUp> {
                               primary: Colors.white,
                               textStyle: const TextStyle(fontSize: 16),
                             ),
-                            onPressed: () {
-                              _auth.register(email, password);
-                            },
+                            onPressed: () => {sigupAction()},
                             child: const Text('Sign Up'),
                           ),
                         ],

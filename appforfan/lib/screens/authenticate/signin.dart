@@ -1,5 +1,4 @@
 import 'package:appforfan/constant/constant.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:appforfan/services/auth.dart';
 
@@ -15,10 +14,16 @@ class _SignInState extends State<SignIn> {
   final AuthService _auth = AuthService();
   String email = '';
   String password = '';
+  String toastMessage = '';
 
   void siginAction() async {
     var result = await _auth.signin(email, password);
-    print(result);
+    if (!result['status']) {
+      final snackBar = SnackBar(
+        content: Text(result['message']),
+      );
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    }
   }
 
   @override
@@ -85,6 +90,9 @@ class _SignInState extends State<SignIn> {
                       ),
                     ),
                     TextFormField(
+                      obscureText: true,
+                      enableSuggestions: false,
+                      autocorrect: false,
                       decoration:
                           textInputDecoration.copyWith(hintText: 'password'),
                       onChanged: (val) {
@@ -133,7 +141,7 @@ class _SignInState extends State<SignIn> {
                               primary: Colors.white,
                               textStyle: const TextStyle(fontSize: 16),
                             ),
-                            onPressed: () => siginAction,
+                            onPressed: () => {siginAction()},
                             child: const Text('Sign In'),
                           ),
                         ],
