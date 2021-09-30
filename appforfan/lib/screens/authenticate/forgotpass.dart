@@ -1,4 +1,5 @@
 import 'package:appforfan/constant/constant.dart';
+import 'package:appforfan/constant/validator.dart';
 import 'package:flutter/material.dart';
 import 'package:appforfan/services/auth.dart';
 
@@ -12,11 +13,26 @@ class Forgot extends StatefulWidget {
 
 class _ForgotState extends State<Forgot> {
   final AuthService _auth = AuthService();
+  final Validation validation = Validation();
   String email = '';
 
   void forgotAction() async {
-    await _auth.sendResetEmail(email);
-    widget.selectView('forgotConfirm');
+    bool validEmail = validation.email(email);
+    if (!validEmail) {
+      final snackBar = SnackBar(
+        content: Text('Please input valid email'),
+      );
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    } else {
+      var result = await _auth.sendResetEmail(email);
+      if (!result['status']) {
+        final snackBar = SnackBar(
+          content: Text(result['message']),
+        );
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      } else
+        widget.selectView('forgotConfirm');
+    }
   }
 
   @override

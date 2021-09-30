@@ -72,7 +72,21 @@ class AuthService {
 
   // reset email
   Future sendResetEmail(String email) async {
-    await _auth.sendPasswordResetEmail(email: email);
+    try {
+      await _auth.sendPasswordResetEmail(email: email);
+    } on FirebaseAuthException catch (e) {
+      Map result = {'status': false};
+      if (e.code == 'user-not-found') {
+        result.addAll({'message': 'No user found for that email.'});
+      } else if (e.code == 'wrong-password') {
+        result.addAll({'message': 'Wrong password provided for that user.'});
+      } else {
+        result.addAll({'message': e.message});
+      }
+      return result;
+    } catch (e) {
+      print(e);
+    }
   }
 
   // sign out

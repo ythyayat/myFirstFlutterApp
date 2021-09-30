@@ -15,4 +15,11 @@ class Validation {
     if (!cek2) return false;
     return true;
   }
+
+  bool email(String email) {
+    bool emailValid = RegExp(
+            r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+        .hasMatch(email);
+    return emailValid;
+  }
 }
